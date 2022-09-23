@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Fernando Hernández Domínguez
+using System;
 
 namespace Semantica{
     public class Program{
