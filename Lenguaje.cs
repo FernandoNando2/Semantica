@@ -62,6 +62,21 @@ namespace Semantica{
             return 0;
         }
 
+    // Programar un metodo de conversion de un valor a un tipo de dato.
+    // Requerimiento 3
+    private float convertir(float valor, string tipo_dato){
+        if(tipo_dato == "char"){
+            return (char)(valor % 255);
+        }
+        else if(tipo_dato == "int"){
+            return (int)(valor % 65535);
+        }
+        else if(tipo_dato == "float"){
+            return valor;
+        }
+        return 0;
+    }
+
         //Programa	-> 	Librerias? Variables? Main
         public void Programa(){
             Librerias();
@@ -346,8 +361,10 @@ namespace Semantica{
             match("printf");
             match("(");
             if(getClasificacion() == tipos.cadena){
-                Console.Write(getContenido().Replace("\"","").Replace("\\n","\n").Replace("\\t","\t"));
-                match(tipos.cadena);
+                if(evaluacion){
+                    Console.Write(getContenido().Replace("\"","").Replace("\\n","\n").Replace("\\t","\t"));
+                    match(tipos.cadena);
+                }
             }
             else{
                 foreach(Variable v in variables){
@@ -493,7 +510,5 @@ namespace Semantica{
                 }
             }
         }
-
     }
-
 }
