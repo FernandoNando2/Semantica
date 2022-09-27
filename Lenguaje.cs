@@ -2,11 +2,13 @@
 using System;
 /*
 Requerimiento 1: Actualizar el dominante para variables en la expresión.
-    Ejemplo: 
+    Ejemplo: float x, char y, y = x
 Requerimiento 2: Actualizar el dominante para el casteo.
 Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato.
     private float convertir(float valor, string tipo_dato)
     Deberan usar el residuo de la division %255, *65535
+    Requerimeinto 4: Evaluar nuevamente la condicion del if, while, for, do while con respecto al parametro que recibe.
+    Requerimiento 5: Levantar una Excepcion cuando la captura no sea un numero (Scanf)
 */
 namespace Semantica{
     public class Lenguaje : Sintaxis{
@@ -134,6 +136,15 @@ namespace Semantica{
                 listaIdentificadores(tipo);
             }
         }
+        
+        // Main -> void main() Bloque de instrucciones
+        private void Main(){
+            match("void");
+            match("main");
+            match("(");
+            match(")");
+            bloqueInstrucciones(true);
+        }
 
         // Bloque de instrucciones -> {Lista de instrucciones?}
         private void bloqueInstrucciones(bool evaluacion){
@@ -224,7 +235,8 @@ namespace Semantica{
         private void While(bool evaluacion){
             match("while");
             match("(");
-            Condicion();
+            bool validaWhile = Condicion();
+            // Requerimiento 4
             match(")");
             if(getContenido() == "{")
                 bloqueInstrucciones(evaluacion);
@@ -241,7 +253,8 @@ namespace Semantica{
                 instruccion(evaluacion);
             match("while");
             match("(");
-            Condicion();
+            bool validaDo = Condicion();
+            // Reuerimiento 4
             match(")");
             match(";");
         }
@@ -322,16 +335,16 @@ namespace Semantica{
             float e2 = stack.Pop();
             float e1 = stack.Pop();
             switch(operador){
-                case ">":
-                    return e1 > e2;
-                case "<":
-                    return e1 < e2;
-                case ">=":
-                    return e1 >= e2;
-                case "<=":
-                    return e1 <= e2;
                 case "==":
                     return e1 == e2;
+                case ">":
+                    return e1 > e2;
+                case ">=":
+                    return e1 >= e2;
+                case "<":
+                    return e1 < e2;
+                case "<=":
+                    return e1 <= e2;
                 default:
                     return e1 != e2;
             }
@@ -342,17 +355,18 @@ namespace Semantica{
             match("if");
             match("(");
             bool validaIf = Condicion();
+            // Requerimiento 4
             match(")");
             if(getContenido() == "{")
                 bloqueInstrucciones(validaIf);
             else
-                instruccion(evaluacion);
+                instruccion(validaIf);
             if(getContenido() == "else"){
                 match("else");
                 if(getContenido() == "{")
                     bloqueInstrucciones(validaIf);
                 else
-                    instruccion(evaluacion);
+                    instruccion(validaIf);
             }
         }
 
@@ -361,18 +375,15 @@ namespace Semantica{
             match("printf");
             match("(");
             if(getClasificacion() == tipos.cadena){
-                if(evaluacion){
+                if(evaluacion)
                     Console.Write(getContenido().Replace("\"","").Replace("\\n","\n").Replace("\\t","\t"));
-                    match(tipos.cadena);
-                }
+                match(tipos.cadena);
             }
             else{
-                foreach(Variable v in variables){
-                    if(getContenido().Equals(v.getNombre()))
-                        Console.Write(v.getValor());
-                }
                 Expresion();
-                stack.Pop();
+                float resultado = stack.Pop();
+                if(evaluacion)
+                    Console.Write(resultado);
             }
             match(")");
             match(tipos.fin_sentencia);
@@ -385,25 +396,18 @@ namespace Semantica{
             match(tipos.cadena);
             match(",");
             match("&");
-            // Requerimiento 2: si no existe el indentificador, lanzar excepcion.
-            string valor = "" + Console.ReadLine();
-            modificaValor(getContenido(),float.Parse(valor));
             // Requerimiento 5: modificar el valor de la variable.
             if(!existeVariable(getContenido())){
                 throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
             }
             match(tipos.identificador);
+            if(evaluacion){
+                string valor = "" + Console.ReadLine();
+                float valorFloat = float.Parse(valor);
+                modificaValor(getContenido(),valorFloat);
+            }
             match(")");
             match(tipos.fin_sentencia);
-        }
-
-        // Main -> void main() Bloque de instrucciones
-        private void Main(){
-            match("void");
-            match("main");
-            match("(");
-            match(")");
-            bloqueInstrucciones(true);
         }
         
         // Expresion -> Termino MasTermino

@@ -213,7 +213,7 @@ namespace Semantica{
         public void NextToken() 
         {
             string buffer = "";           
-            char c;      
+            char c;
             int estado = 0;
 
             while(estado >= 0)
