@@ -7,8 +7,9 @@ Requerimiento 2: Actualizar el dominante para el casteo.
 Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato.
     private float convertir(float valor, string tipo_dato)
     Deberan usar el residuo de la division %255, *65535
-    Requerimeinto 4: Evaluar nuevamente la condicion del if, while, for, do while con respecto al parametro que recibe.
-    Requerimiento 5: Levantar una Excepcion cuando la captura no sea un numero (Scanf)
+Requerimeinto 4: Evaluar nuevamente la condicion del if, while, for, do while con respecto al parametro que recibe.
+Requerimiento 5: Levantar una Excepcion cuando la captura no sea un numero (Scanf)
+Requerimiento 6: Ejecutar el For()
 */
 namespace Semantica{
     public class Lenguaje : Sintaxis{
@@ -264,6 +265,17 @@ namespace Semantica{
             match("for");
             match("(");
             Asignacion(evaluacion);
+            /*
+            Requerimiento 4
+            Requerimiento 6:
+            a) Necesito guardar la pocision de la lectura en el archivo de texto
+            */ 
+            bool validaFor = Condicion();
+            /*
+            b) Metemos una condicion while despues de validar el for.
+            while()
+            {
+            */ 
             Condicion();
             match(";");
             Incremento();
@@ -272,6 +284,10 @@ namespace Semantica{
                 bloqueInstrucciones(evaluacion);
             else
                 instruccion(evaluacion);
+            /*
+            c) Regresar a la posicion de la lectura del archivo
+            d) Sacar otro token
+            */
         }
 
         // Incremento -> Identificador ++ | --
@@ -402,7 +418,7 @@ namespace Semantica{
             }
             match(tipos.identificador);
             if(evaluacion){
-                string valor = "" + Console.ReadLine();
+                    string valor = "" + Console.ReadLine();
                 float valorFloat = float.Parse(valor);
                 modificaValor(getContenido(),valorFloat);
             }
@@ -476,6 +492,7 @@ namespace Semantica{
                     throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
                 log.Write(getContenido() + " ");
                 // Requerimiento 1:  Actualizar el dominante para variables en la expresión.
+
                 stack.Push(getValor(getContenido()));
                 match(tipos.identificador);
             }
