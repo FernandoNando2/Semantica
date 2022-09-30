@@ -1,7 +1,7 @@
 // Fernando Hernández Domínguez
 using System;
 /*
-Requerimiento 1: Actualizar el dominante para variables en la expresión.
+Requerimiento 1: Actualizar el dominante para variables en la expresión. ya
     Ejemplo: float x, char y, y = x
 Requerimiento 2: Actualizar el dominante para el casteo.
 Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato.
@@ -203,7 +203,6 @@ namespace Semantica{
 
         private bool evaluaSemantica( string variable, float resultado){
             Variable.tipoDato tipoDato = getTipo(variable);
-
             return false;
         }
 
@@ -492,7 +491,8 @@ namespace Semantica{
                     throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
                 log.Write(getContenido() + " ");
                 // Requerimiento 1:  Actualizar el dominante para variables en la expresión.
-
+                if(dominante < getTipo(getContenido()))
+                    dominante = getTipo(getContenido());
                 stack.Push(getValor(getContenido()));
                 match(tipos.identificador);
             }
@@ -525,9 +525,14 @@ namespace Semantica{
                     Saco un elemento del stack 
                     Convierte ese valor al equivalente en casteo 
                     Requerimiento 3:
-                    Si el cateo es char y el pop regresa un 256, el valor equivalente en casteo es 0
+                    Si el casteo es char y el pop regresa un 256, el valor equivalente en casteo es 0
                     */
+                    float valor = stack.Pop();
+                    evaluaNumero(valor);
                     dominante = casteo;
+                    Console.WriteLine(dominante);
+                    Console.WriteLine(valor);
+                    Console.WriteLine(evaluaNumero(valor));
                 }
             }
         }
