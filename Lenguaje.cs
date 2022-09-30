@@ -3,8 +3,8 @@ using System;
 /*
 Requerimiento 1: Actualizar el dominante para variables en la expresión. ya
     Ejemplo: float x, char y, y = x
-Requerimiento 2: Actualizar el dominante para el casteo.
-Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato.
+Requerimiento 2: Actualizar el dominante para el casteo. ya
+Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato. ya
     private float convertir(float valor, string tipo_dato)
     Deberan usar el residuo de la division %255, *65535
 Requerimeinto 4: Evaluar nuevamente la condicion del if, while, for, do while con respecto al parametro que recibe.
@@ -67,14 +67,14 @@ namespace Semantica{
 
     // Programar un metodo de conversion de un valor a un tipo de dato.
     // Requerimiento 3
-    private float convertir(float valor, string tipo_dato){
-        if(tipo_dato == "char"){
-            return (char)(valor % 255);
+    private float convertir(float valor, Variable.tipoDato tipoDato){
+        if(tipoDato == Variable.tipoDato.Char){
+            return (char)(valor % 256);
         }
-        else if(tipo_dato == "int"){
+        else if(tipoDato == Variable.tipoDato.Int){
             return (int)(valor % 65535);
         }
-        else if(tipo_dato == "float"){
+        else if(tipoDato == Variable.tipoDato.Float){
             return valor;
         }
         return 0;
@@ -522,17 +522,14 @@ namespace Semantica{
                 if(huboCasteo){
                     /*
                     Requerimiento 2: 
-                    Saco un elemento del stack 
-                    Convierte ese valor al equivalente en casteo 
+                    Saco un elemento del stack ya
+                    Convierte ese valor al equivalente en casteo
                     Requerimiento 3:
                     Si el casteo es char y el pop regresa un 256, el valor equivalente en casteo es 0
                     */
                     float valor = stack.Pop();
-                    evaluaNumero(valor);
+                    stack.Push(convertir(valor, casteo));
                     dominante = casteo;
-                    Console.WriteLine(dominante);
-                    Console.WriteLine(valor);
-                    Console.WriteLine(evaluaNumero(valor));
                 }
             }
         }
