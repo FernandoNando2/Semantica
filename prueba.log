@@ -1,8 +1,8 @@
 Archivo: C:\Users\Fernando Hernandez\Desktop\ITQ\5to Semestre\Lenguajes y Automatas II\Semantica\prueba.cpp
-Compilado: 30/09/2022 09:38:02 a. m.
+Compilado: 02/10/2022 12:27:49 p. m.
 
-y = 256 = 0
-y 10 3 - 10 10 3 + 10 
+y = 253 = 253
+10 3 - 10 10 3 + 10 
 Variables: 
 area Float 0
 radio Float 0
@@ -10,5 +10,5 @@ pi Float 0
 resultado Float 0
 a Int 0
 d Int 0
-x Float 0
-y Char 0
+x Float 12
+y Char 253

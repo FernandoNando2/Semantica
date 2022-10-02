@@ -8,7 +8,7 @@ Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato
     private float convertir(float valor, string tipo_dato)
     Deberan usar el residuo de la division %255, *65535
 Requerimeinto 4: Evaluar nuevamente la condicion del if, while, for, do while con respecto al parametro que recibe.
-Requerimiento 5: Levantar una Excepcion cuando la captura no sea un numero (Scanf)
+Requerimiento 5: Levantar una Excepcion cuando la captura no sea un numero (Scanf) ya
 Requerimiento 6: Ejecutar el For()
 */
 namespace Semantica{
@@ -42,7 +42,7 @@ namespace Semantica{
             return false;
         }
 
-        private void modificaValor(string nombre, float nvalor){// Requerimiento 3 ya
+        private void modificaValor(string nombre, float nvalor){
             foreach(Variable v in variables){
                 if(nombre == v.getNombre())
                     v.setValor(nvalor);
@@ -415,12 +415,17 @@ namespace Semantica{
             if(!existeVariable(getContenido())){
                 throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
             }
-            match(tipos.identificador);
             if(evaluacion){
-                    string valor = "" + Console.ReadLine();
-                float valorFloat = float.Parse(valor);
-                modificaValor(getContenido(),valorFloat);
+                try{
+                    string valor = "" +Console.ReadLine();
+                    float valorFloat = float.Parse(valor);
+                    modificaValor(getContenido(),valorFloat);
+                }
+                catch(Exception){
+                    throw new Error("Error de sintaxis, el valor ingresado no es un numero, linea: "+linea, log);
+                }
             }
+            match(tipos.identificador);
             match(")");
             match(tipos.fin_sentencia);
         }
