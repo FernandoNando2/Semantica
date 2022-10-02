@@ -233,27 +233,39 @@ namespace Semantica{
 
         // While -> while(Condicion) bloqueInstrucciones | instruccion
         private void While(bool evaluacion){
+            bool validaWhile;
             match("while");
             match("(");
-            bool validaWhile = Condicion();
+            if(evaluacion)
+                validaWhile = Condicion();
+            else{
+                Condicion();
+                validaWhile = false;
+            }
             // Requerimiento 4
             match(")");
             if(getContenido() == "{")
-                bloqueInstrucciones(evaluacion);
+                bloqueInstrucciones(validaWhile);
             else
-                instruccion(evaluacion);
+                instruccion(validaWhile);
         }
 
         //Do -> do bloqueInstrucciones | instruccion while(Condicion);
         private void Do(bool evaluacion){
+            bool validaDo = !evaluacion;
             match("do");
             if(getContenido() == "{")
-                bloqueInstrucciones(evaluacion);
+                bloqueInstrucciones(validaDo);
             else
-                instruccion(evaluacion);
+                instruccion(validaDo);
             match("while");
             match("(");
-            bool validaDo = Condicion();
+            if(evaluacion)
+                validaDo = Condicion();
+            else{
+                Condicion();
+                validaDo = false;
+            }
             // Reuerimiento 4
             match(")");
             match(";");
@@ -261,6 +273,7 @@ namespace Semantica{
 
         // For -> for(Asignacion Condicion; Incremento) bloqueInstrucciones | Instruccion  
         private void For(bool evaluacion){
+            bool validaFor;
             match("for");
             match("(");
             Asignacion(evaluacion);
@@ -268,21 +281,25 @@ namespace Semantica{
             Requerimiento 4
             Requerimiento 6:
             a) Necesito guardar la pocision de la lectura en el archivo de texto
-            */ 
-            bool validaFor = Condicion();
-            /*
+            
+            
             b) Metemos una condicion while despues de validar el for.
             while()
             {
-            */ 
-            Condicion();
+            */
+            if(evaluacion)
+                validaFor = Condicion();
+            else{
+                Condicion();
+                validaFor = false;
+            }
             match(";");
             Incremento();
             match(")");
             if(getContenido() == "{")
-                bloqueInstrucciones(evaluacion);
+                bloqueInstrucciones(validaFor);
             else
-                instruccion(evaluacion);
+                instruccion(validaFor);
             /*
             c) Regresar a la posicion de la lectura del archivo
             d) Sacar otro token
@@ -367,10 +384,15 @@ namespace Semantica{
 
         // If -> if(Condicion) Bloque de instrucciones (Else bloqueInstrucciones)?
         private void If(bool evaluacion){
+            bool validaIf;
             match("if");
             match("(");
-            bool validaIf = Condicion();
-            // Requerimiento 4
+            if(evaluacion)
+                validaIf = Condicion();
+            else{
+                Condicion();
+                validaIf = false;
+            }
             match(")");
             if(getContenido() == "{")
                 bloqueInstrucciones(validaIf);
@@ -379,9 +401,9 @@ namespace Semantica{
             if(getContenido() == "else"){
                 match("else");
                 if(getContenido() == "{")
-                    bloqueInstrucciones(validaIf);
+                    bloqueInstrucciones(!validaIf);
                 else
-                    instruccion(validaIf);
+                    instruccion(!validaIf);
             }
         }
 
