@@ -8,12 +8,14 @@ float x;
 char y;
 // Este programa calcula el volumen de un cilindro.
 void main(){
-    while (1 < 2){
+    while (1 > 2){
         printf("Hola");
         if(1 > 2){
-            printf("Hola");
+            printf("adios");
+            printf("Holaaa");
         }
         else{
+            printf("adios");
             printf("adios");
         }
     }

@@ -7,7 +7,7 @@ Requerimiento 2: Actualizar el dominante para el casteo. ya
 Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato. ya
     private float convertir(float valor, string tipo_dato)
     Deberan usar el residuo de la division %255, *65535
-Requerimeinto 4: Evaluar nuevamente la condicion del if, while, for, do while con respecto al parametro que recibe.
+Requerimeinto 4: Evaluar nuevamente la condicion del if, while, for, do while con respecto al parametro que recibe. ya
 Requerimiento 5: Levantar una Excepcion cuando la captura no sea un numero (Scanf) ya
 Requerimiento 6: Ejecutar el For()
 */
@@ -26,6 +26,11 @@ namespace Semantica{
 
         public void addVariable(String nombre, Variable.tipoDato tipo){
             variables.Add(new Variable(nombre,tipo));
+        }
+
+        private void setPosicion(long posicion){
+            archivo.DiscardBufferedData();
+            archivo.BaseStream.Seek(posicion, SeekOrigin.Begin);
         }
 
         public void displayVariables(){
@@ -274,6 +279,8 @@ namespace Semantica{
         // For -> for(Asignacion Condicion; Incremento) bloqueInstrucciones | Instruccion  
         private void For(bool evaluacion){
             bool validaFor;
+            int lin = linea;
+            int pos = posicion;
             match("for");
             match("(");
             Asignacion(evaluacion);
@@ -400,10 +407,14 @@ namespace Semantica{
                 instruccion(validaIf);
             if(getContenido() == "else"){
                 match("else");
-                if(getContenido() == "{")
-                    bloqueInstrucciones(!validaIf);
+                if(getContenido() == "{"){
+                    if(evaluacion)
+                        bloqueInstrucciones(!validaIf);
+                    else
+                        bloqueInstrucciones(evaluacion);
+                }
                 else
-                    instruccion(!validaIf);
+                    instruccion(evaluacion);
             }
         }
 

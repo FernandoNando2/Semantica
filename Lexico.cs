@@ -3,10 +3,11 @@ using System;
 
 namespace Semantica{
     public class Lexico : Token{
-        StreamReader archivo;
+        protected StreamReader archivo;
         protected StreamWriter log;
         const int F = -1;
         const int E = -2;
+        protected int posicion;
         protected int linea;
         int[,] trand = new int[,]
         {
@@ -212,10 +213,9 @@ namespace Semantica{
         //WS,EF,EL,L, D, .,	E, +, -, =,	:, ;, &, |,	!, >, <, *,	%, /, ", ?,#,',La
         public void NextToken() 
         {
-            string buffer = "";           
+            string buffer = "";
             char c;
             int estado = 0;
-
             while(estado >= 0)
             {
                 c = (char)archivo.Peek(); //Funcion de transicion
@@ -224,6 +224,7 @@ namespace Semantica{
                 if (estado >= 0)
                 {
                     archivo.Read();
+                    posicion ++;
                     if (c == '\n')
                         linea++;
                     if (estado > 0)
