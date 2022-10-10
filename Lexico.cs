@@ -258,7 +258,6 @@ namespace Semantica{
                         break;
             }
             if(estado == E){
-                // Requerimiento 9: Agregar el numero de linea en el error.
                 if(getContenido()[0] == '"')
                     throw new Error("Error Lexico linea " +linea +": No se cerro la cadena con \".", log);
                 else if(getContenido()[0] == '\'')

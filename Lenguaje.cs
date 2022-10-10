@@ -73,15 +73,12 @@ namespace Semantica{
     // Programar un metodo de conversion de un valor a un tipo de dato.
     // Requerimiento 3
     private float convertir(float valor, Variable.tipoDato tipoDato){
-        if(tipoDato == Variable.tipoDato.Char){
+        if(tipoDato == Variable.tipoDato.Char)
             return (char)(valor % 256);
-        }
-        else if(tipoDato == Variable.tipoDato.Int){
+        else if(tipoDato == Variable.tipoDato.Int)
             return (int)(valor % 65535);
-        }
-        else if(tipoDato == Variable.tipoDato.Float){
+        else if(tipoDato == Variable.tipoDato.Float)
             return valor;
-        }
         return 0;
     }
 
@@ -279,53 +276,47 @@ namespace Semantica{
         // For -> for(Asignacion Condicion; Incremento) bloqueInstrucciones | Instruccion  
         private void For(bool evaluacion){
             bool validaFor;
-            int lin = linea;
-            int pos = posicion;
             match("for");
             match("(");
             Asignacion(evaluacion);
-            /*
-            Requerimiento 4
-            Requerimiento 6:
-            a) Necesito guardar la pocision de la lectura en el archivo de texto
-            
-            
-            b) Metemos una condicion while despues de validar el for.
-            while()
-            {
-            */
-            if(evaluacion)
+            string variable = getContenido();
+            int pos = posicion;
+            int lin = linea;
+            do{
                 validaFor = Condicion();
-            else{
-                Condicion();
-                validaFor = false;
-            }
-            match(";");
-            Incremento();
-            match(")");
-            if(getContenido() == "{")
-                bloqueInstrucciones(validaFor);
-            else
-                instruccion(validaFor);
-            /*
-            c) Regresar a la posicion de la lectura del archivo
-            d) Sacar otro token
-            */
+                if(!evaluacion)
+                    validaFor = false;
+                match(";");
+                Incremento(validaFor);
+                match(")");
+                if(getContenido() == "{")
+                    bloqueInstrucciones(validaFor);
+                else
+                    instruccion(validaFor);
+                if(validaFor){
+                    posicion = pos - variable.Length;
+                    linea = lin;
+                    setPosicion(posicion);
+                    NextToken();
+                }
+            }while(validaFor);
         }
 
         // Incremento -> Identificador ++ | --
-        private void Incremento(){
+        private void Incremento(bool evaluacion){
             string variable = getContenido();
             if(!existeVariable(getContenido()))
                 throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
             match(tipos.identificador);
             if(getContenido() == "++"){
                 match("++");
-                modificaValor(variable, getValor((variable))+1);
+                if(evaluacion)
+                    modificaValor(variable, getValor(variable) + 1);
             }
             else{
                 match("--");
-                modificaValor(variable, getValor((variable))-1);
+                if(evaluacion)
+                    modificaValor(variable, getValor(variable) - 1);
             }
         }
 
@@ -413,8 +404,12 @@ namespace Semantica{
                     else
                         bloqueInstrucciones(evaluacion);
                 }
-                else
-                    instruccion(evaluacion);
+                else{
+                    if(evaluacion)
+                        instruccion(!validaIf);
+                    else
+                        instruccion(evaluacion);
+                }
             }
         }
 
@@ -445,9 +440,8 @@ namespace Semantica{
             match(",");
             match("&");
             // Requerimiento 5: modificar el valor de la variable.
-            if(!existeVariable(getContenido())){
+            if(!existeVariable(getContenido()))
                 throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
-            }
             if(evaluacion){
                 try{
                     string valor = "" +Console.ReadLine();
