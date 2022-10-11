@@ -280,6 +280,7 @@ namespace Semantica{
             match("(");
             Asignacion(evaluacion);
             string variable = getContenido();
+            float valor = 0;
             int pos = posicion;
             int lin = linea;
             do{
@@ -287,7 +288,7 @@ namespace Semantica{
                 if(!evaluacion)
                     validaFor = false;
                 match(";");
-                Incremento(validaFor);
+                valor = Incremento();
                 match(")");
                 if(getContenido() == "{")
                     bloqueInstrucciones(validaFor);
@@ -298,6 +299,7 @@ namespace Semantica{
                     linea = lin;
                     setPosicion(posicion);
                     NextToken();
+                    modificaValor(variable, valor);
                 }
             }while(validaFor);
         }
@@ -318,6 +320,23 @@ namespace Semantica{
                 if(evaluacion)
                     modificaValor(variable, getValor(variable) - 1);
             }
+        }
+
+        private float Incremento(){
+            string variable = getContenido();
+            float valor = getValor(variable);
+            if(!existeVariable(getContenido()))
+                throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
+            match(tipos.identificador);
+            if(getContenido() == "++"){
+                match("++");
+                valor += 1;
+            }
+            else{
+                match("--");
+                valor -= 1;
+            }
+            return valor;
         }
 
         // Switch -> switch(Expresion){listaDeCasos}

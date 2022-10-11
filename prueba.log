@@ -1,8 +1,10 @@
 Archivo: C:\Users\Fernando Hernandez\Desktop\ITQ\5to Semestre\Lenguajes y Automatas II\Semantica\prueba.cpp
-Compilado: 10/10/2022 08:00:38 a. m.
+Compilado: 11/10/2022 08:51:46 a. m.
 altura 2 
-i = altura = 7
+i = altura = 10
 i 0 
+j = 0 = 0
+j altura i - j 2 i 0 
 j = 0 = 0
 j altura i - j 2 j altura i - j 2 i 0 
 j = 0 = 0
@@ -17,6 +19,10 @@ j = 0 = 0
 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
 j = 0 = 0
 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
+j = 0 = 0
+j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
+j = 0 = 0
+j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
 j = 0 = 0
 j altura i - j 2 1 1 2 2 
 a = 256 = 256
