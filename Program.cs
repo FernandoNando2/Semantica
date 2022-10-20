@@ -12,7 +12,7 @@ namespace Semantica{
                 /*while(!a.FinArchivo()){
                     a.NextToken();
                 }*/
-                a.Cerrar();
+                a.cerrar();
             }
             catch(Exception e){
                 Console.WriteLine(e.Message);

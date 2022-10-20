@@ -1,33 +1,15 @@
 Archivo: C:\Users\Fernando Hernandez\Desktop\ITQ\5to Semestre\Lenguajes y Automatas II\Semantica\prueba.cpp
-Compilado: 11/10/2022 08:51:46 a. m.
-altura 2 
-i = altura = 10
-i 0 
-j = 0 = 0
-j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 j altura i - j 2 i 0 
-j = 0 = 0
-j altura i - j 2 1 1 2 2 
-a = 256 = 256
-a 
-y = a = 0
-y 
-y = a = 256
-Error de semantica, no podemos asignar un <Int> a un <Char> en linea: 45
+Compilado: 20/10/2022 09:21:29 a. m.
+
+Variables: 
+area Float 0
+radio Float 0
+pi Float 0
+resultado Float 0
+a Int 0
+d Int 0
+altura Int 0
+x Float 0
+y Char 0
+i Int 0
+j Int 0

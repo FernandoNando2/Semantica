@@ -3,6 +3,7 @@ using System;
 
 namespace Semantica{
     public class Lexico : Token{
+        protected StreamWriter asm;
         protected StreamReader archivo;
         protected StreamWriter log;
         const int F = -1;
@@ -61,6 +62,8 @@ namespace Semantica{
             DateTime hoy = DateTime.Now;
             log = new StreamWriter("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.log");
             log.AutoFlush = true;
+            asm = new StreamWriter("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.asm");
+            asm.AutoFlush = true;
             log.WriteLine("Archivo: prueba.cpp");
             log.WriteLine("Compilado: " +hoy);
             if(File.Exists("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.cpp")) // Investigar como checar si un archivo existe
@@ -78,16 +81,19 @@ namespace Semantica{
                 String nruta = Path.GetFileNameWithoutExtension(ruta);
                 log = new StreamWriter(nruta +".log");
             }
-            DateTime hoy = DateTime.Now;
             log.AutoFlush = true;
+            asm = new StreamWriter("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.asm");
+            asm.AutoFlush = true;
             log.WriteLine("Archivo: " +ruta);
-            log.WriteLine("Compilado: " +hoy);
+            log.WriteLine("Compilado: " +DateTime.Now);
+            asm.WriteLine(";Archivo: " +ruta);
+            asm.WriteLine(";Compilado: " +DateTime.Now);
             if(File.Exists(ruta))
                 archivo = new StreamReader(ruta); 
             else
-                throw new Error("Error: El archivo prueba.cpp no existe.", log);
+                throw new Error("Error: El archivo " +ruta +" no existe.", log);
         }
-        public void Cerrar()
+        public void cerrar()
         {
             archivo.Close();
             log.Close();

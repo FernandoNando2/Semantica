@@ -1,15 +1,16 @@
 // Fernando Hernández Domínguez
 using System;
 /*
-Requerimiento 1: Actualizar el dominante para variables en la expresión. ya
-    Ejemplo: float x, char y, y = x
-Requerimiento 2: Actualizar el dominante para el casteo. ya
-Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato. ya
-    private float convertir(float valor, string tipo_dato)
-    Deberan usar el residuo de la division %255, *65535
-Requerimeinto 4: Evaluar nuevamente la condicion del if, while, for, do while con respecto al parametro que recibe. ya
-Requerimiento 5: Levantar una Excepcion cuando la captura no sea un numero (Scanf) ya
-Requerimiento 6: Ejecutar el For()
+Requerimiento 1: Actualizacion: 
+    a) Agregar el residuo de la division en el porFactor()
+    b) Agregar en instruccion los incrementos de termino y factor
+        a++, a--, a+=1, a-=1, a*=1, a/=1
+        en donde el 1 puede ser una expresion
+    c) Programar el destructor de la clase Lenguaje para ejecutar el metodo cerrar() en clase Lexico usar libreria y contenedor
+Requerimiento 2: Actualizacion la venganza:
+    a) Marcar errores semanticos cuando los incrementos de termino o factor superen el rango de la variable
+    b) Considerar el inciso b) y c) para el for.
+    c) Hacer funcionar el do y while
 */
 namespace Semantica{
     public class Lenguaje : Sintaxis{
@@ -22,6 +23,11 @@ namespace Semantica{
 
         public Lenguaje(String ruta) : base(ruta) {
 
+        }
+
+        ~Lenguaje(){
+            Console.WriteLine("Destructor");
+            cerrar();
         }
 
         public void addVariable(String nombre, Variable.tipoDato tipo){
@@ -215,22 +221,27 @@ namespace Semantica{
             string nombre = getContenido();
             if(!existeVariable(getContenido()))
                 throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
-            match(tipos.identificador);
-            match("=");
-            dominante = Variable.tipoDato.Char;
-            Expresion();
-            match(";");
-            float resultado = stack.Pop();
-            log.Write("= " +resultado);
-            log.WriteLine();
-            if(dominante < evaluaNumero(resultado))
-                dominante = evaluaNumero(resultado);
-            if(dominante <= getTipo(nombre)){
-                if(evaluacion)
-                    modificaValor(nombre, resultado);
+            else{
+                match(tipos.identificador);
+                dominante = Variable.tipoDato.Char;
+                if (getClasificacion() == tipos.incremento_termino || getClasificacion() == tipos.incremento_factor){
+                    //Requerimiento 1 b) 
+                }
+                match("=");
+                Expresion();
+                match(";");
+                float resultado = stack.Pop();
+                log.Write("= " +resultado);
+                log.WriteLine();
+                if(dominante < evaluaNumero(resultado))
+                    dominante = evaluaNumero(resultado);
+                if(dominante <= getTipo(nombre)){
+                    if(evaluacion)
+                        modificaValor(nombre, resultado);
+                }
+                else
+                    throw new Error("Error de semantica, no podemos asignar un <" +dominante +"> a un <" +getTipo(nombre) +"> en linea: " +linea, log);
             }
-            else
-                throw new Error("Error de semantica, no podemos asignar un <" +dominante +"> a un <" +getTipo(nombre) +"> en linea: " +linea, log);
         }
 
         // While -> while(Condicion) bloqueInstrucciones | instruccion
@@ -279,6 +290,7 @@ namespace Semantica{
             match("for");
             match("(");
             Asignacion(evaluacion);
+
             string variable = getContenido();
             float valor = 0;
             int pos = posicion;
@@ -289,6 +301,7 @@ namespace Semantica{
                     validaFor = false;
                 match(";");
                 valor = Incremento();
+                // Requerimiento 1 d)
                 match(")");
                 if(getContenido() == "{")
                     bloqueInstrucciones(validaFor);
@@ -523,6 +536,9 @@ namespace Semantica{
                         break;
                     case "/":
                         stack.Push(n2 / n1);
+                        break;
+                    case "%":
+                        stack.Push(n2 % n1);
                         break;
                 }
             }
