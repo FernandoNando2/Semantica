@@ -13,6 +13,7 @@ Requerimiento 2: Actualizacion la venganza:
     c) Hacer funcionar el do y while
 Requerimiento 3: 
     a) Considerar las variables y los casteos en las expresiones matematicas en ensamblador
+    b) Considerar el residuo la division en ensamblador
 */
 namespace Semantica{
     public class Lenguaje : Sintaxis{
@@ -45,6 +46,12 @@ namespace Semantica{
             log.WriteLine("\nVariables: ");
             foreach (Variable v in variables)
                 log.WriteLine(v.getNombre() +" " +v.getTipo() +" " +v.getValor());
+        }
+
+        public void variablesAsm(){
+            asm.WriteLine("\n;Variables: \n");
+            foreach (Variable v in variables)
+                asm.WriteLine("\t" +v.getNombre() +" dw  ?");
         }
 
         private bool existeVariable(string nombre){
@@ -95,6 +102,7 @@ namespace Semantica{
             asm.WriteLine("ORG 100H");
             Librerias();
             Variables();
+            variablesAsm();
             Main();
             displayVariables();
             asm.WriteLine("RET");
@@ -242,8 +250,10 @@ namespace Semantica{
                 if(dominante < evaluaNumero(resultado))
                     dominante = evaluaNumero(resultado);
                 if(dominante <= getTipo(nombre)){
-                    if(evaluacion)
+                    if(evaluacion){
                         modificaValor(nombre, resultado);
+                        asm.WriteLine("MOV " + nombre + ", AX");
+                    }
                 }
                 else
                     throw new Error("Error de semantica, no podemos asignar un <" +dominante +"> a un <" +getTipo(nombre) +"> en linea: " +linea, log);
@@ -514,9 +524,9 @@ namespace Semantica{
                 termino();
                 log.Write(operador + " ");
                 float n1 = stack.Pop();
-                asm.WriteLine("POP AX");
-                float n2 = stack.Pop();
                 asm.WriteLine("POP BX");
+                float n2 = stack.Pop();
+                asm.WriteLine("POP AX");
                 switch(operador){
                     case "+":
                         stack.Push(n2 + n1);
@@ -526,7 +536,7 @@ namespace Semantica{
                     case "-":
                         stack.Push(n2 - n1);
                         asm.WriteLine("SUB AX,BX");
-                        asm.WriteLine("PUSH BX");
+                        asm.WriteLine("PUSH AX");
                         break;
                 }
             }
@@ -546,9 +556,9 @@ namespace Semantica{
                 factor();
                 log.Write(operador + " ");
                 float n1 = stack.Pop();
-                asm.WriteLine("POP AX");
-                float n2 = stack.Pop();
                 asm.WriteLine("POP BX");
+                float n2 = stack.Pop();
+                asm.WriteLine("POP AX");
                 switch(operador){
                     case "*":
                         stack.Push(n2 * n1);
@@ -562,6 +572,8 @@ namespace Semantica{
                         break;
                     case "%":
                         stack.Push(n2 % n1);
+                        asm.WriteLine("DIV BX");
+                        asm.WriteLine("PUSH DX");
                         break;
                 }
             }
