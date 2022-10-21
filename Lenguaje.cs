@@ -11,6 +11,8 @@ Requerimiento 2: Actualizacion la venganza:
     a) Marcar errores semanticos cuando los incrementos de termino o factor superen el rango de la variable
     b) Considerar el inciso b) y c) para el for.
     c) Hacer funcionar el do y while
+Requerimiento 3: 
+    a) Considerar las variables y los casteos en las expresiones matematicas en ensamblador
 */
 namespace Semantica{
     public class Lenguaje : Sintaxis{
@@ -76,8 +78,6 @@ namespace Semantica{
             return 0;
         }
 
-    // Programar un metodo de conversion de un valor a un tipo de dato.
-    // Requerimiento 3
     private float convertir(float valor, Variable.tipoDato tipoDato){
         if(tipoDato == Variable.tipoDato.Char)
             return (char)(valor % 256);
@@ -90,10 +90,15 @@ namespace Semantica{
 
         //Programa	-> 	Librerias? Variables? Main
         public void Programa(){
+            asm.WriteLine("#make_COM#");
+            asm.WriteLine("include emu8086.inc");
+            asm.WriteLine("ORG 100H");
             Librerias();
             Variables();
             Main();
             displayVariables();
+            asm.WriteLine("RET");
+            asm.WriteLine("END");
         }
 
         //Librerias	->	#include<identificador(.h)?> Librerias?
@@ -231,6 +236,7 @@ namespace Semantica{
                 Expresion();
                 match(";");
                 float resultado = stack.Pop();
+                asm.WriteLine("POP AX");
                 log.Write("= " +resultado);
                 log.WriteLine();
                 if(dominante < evaluaNumero(resultado))
@@ -358,6 +364,7 @@ namespace Semantica{
             match("(");
             Expresion();
             stack.Pop();
+            asm.WriteLine("POP AX");
             match(")");
             match("{");
             listaDeCasos(evaluacion);
@@ -378,6 +385,7 @@ namespace Semantica{
             match("case");
             Expresion();
             stack.Pop();
+            asm.WriteLine("POP AX");
             match(":");
             listaInstruccionesCase(evaluacion);
             if(getContenido() == "break") {
@@ -395,7 +403,9 @@ namespace Semantica{
             match(tipos.operador_relacional);
             Expresion();
             float e2 = stack.Pop();
+            asm.WriteLine("POP AX");
             float e1 = stack.Pop();
+            asm.WriteLine("POP BX");
             switch(operador){
                 case "==":
                     return e1 == e2;
@@ -457,6 +467,7 @@ namespace Semantica{
             else{
                 Expresion();
                 float resultado = stack.Pop();
+                asm.WriteLine("POP AX");
                 if(evaluacion)
                     Console.Write(resultado);
             }
@@ -503,13 +514,19 @@ namespace Semantica{
                 termino();
                 log.Write(operador + " ");
                 float n1 = stack.Pop();
+                asm.WriteLine("POP AX");
                 float n2 = stack.Pop();
+                asm.WriteLine("POP BX");
                 switch(operador){
                     case "+":
                         stack.Push(n2 + n1);
+                        asm.WriteLine("ADD AX,BX");
+                        asm.WriteLine("PUSH AX");
                         break;
                     case "-":
                         stack.Push(n2 - n1);
+                        asm.WriteLine("SUB AX,BX");
+                        asm.WriteLine("PUSH BX");
                         break;
                 }
             }
@@ -529,13 +546,19 @@ namespace Semantica{
                 factor();
                 log.Write(operador + " ");
                 float n1 = stack.Pop();
+                asm.WriteLine("POP AX");
                 float n2 = stack.Pop();
+                asm.WriteLine("POP BX");
                 switch(operador){
                     case "*":
                         stack.Push(n2 * n1);
+                        asm.WriteLine("MUL BX");
+                        asm.WriteLine("PUSH AX");
                         break;
                     case "/":
                         stack.Push(n2 / n1);
+                        asm.WriteLine("DIV BX");
+                        asm.WriteLine("PUSH AX");
                         break;
                     case "%":
                         stack.Push(n2 % n1);
@@ -551,6 +574,8 @@ namespace Semantica{
                 if(dominante < evaluaNumero(float.Parse(getContenido())))
                     dominante = evaluaNumero(float.Parse(getContenido()));
                 stack.Push(float.Parse(getContenido()));
+                asm.WriteLine("MOV AX," + getContenido());
+                asm.WriteLine("PUSH AX");
                 match(tipos.numero);
             }
             else if(getClasificacion() == tipos.identificador){
@@ -595,6 +620,7 @@ namespace Semantica{
                     Si el casteo es char y el pop regresa un 256, el valor equivalente en casteo es 0
                     */
                     float valor = stack.Pop();
+                    asm.WriteLine("POP AX");
                     stack.Push(convertir(valor, casteo));
                     dominante = casteo;
                 }

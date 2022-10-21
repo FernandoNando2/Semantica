@@ -1,5 +1,7 @@
-Archivo: C:\Users\Fernando Hernandez\Desktop\ITQ\5to Semestre\Lenguajes y Automatas II\Semantica\prueba.cpp
-Compilado: 20/10/2022 09:21:29 a. m.
+Archivo: prueba.cpp
+Compilado: 20/10/2022 09:57:37 a. m.
+
+y = 3 5 + 8 * 10 4 - 2 / - = 61
 
 Variables: 
 area Float 0
@@ -10,6 +12,6 @@ a Int 0
 d Int 0
 altura Int 0
 x Float 0
-y Char 0
+y Char 61
 i Int 0
 j Int 0

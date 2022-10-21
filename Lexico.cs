@@ -59,13 +59,12 @@ namespace Semantica{
         public Lexico()
         {
             linea = 1;
-            DateTime hoy = DateTime.Now;
             log = new StreamWriter("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.log");
             log.AutoFlush = true;
             asm = new StreamWriter("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.asm");
             asm.AutoFlush = true;
             log.WriteLine("Archivo: prueba.cpp");
-            log.WriteLine("Compilado: " +hoy);
+            log.WriteLine("Compilado: " +DateTime.Now);
             if(File.Exists("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.cpp")) // Investigar como checar si un archivo existe
                 archivo = new StreamReader("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.cpp"); 
             else
@@ -84,9 +83,9 @@ namespace Semantica{
             log.AutoFlush = true;
             asm = new StreamWriter("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.asm");
             asm.AutoFlush = true;
-            log.WriteLine("Archivo: " +ruta);
+            log.WriteLine("Archivo: prueba.cpp");
             log.WriteLine("Compilado: " +DateTime.Now);
-            asm.WriteLine(";Archivo: " +ruta);
+            asm.WriteLine(";Archivo: prueba.asm");
             asm.WriteLine(";Compilado: " +DateTime.Now);
             if(File.Exists(ruta))
                 archivo = new StreamReader(ruta); 
