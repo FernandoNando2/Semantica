@@ -251,13 +251,12 @@ namespace Semantica{
                 if(dominante < evaluaNumero(resultado))
                     dominante = evaluaNumero(resultado);
                 if(dominante <= getTipo(nombre)){
-                    if(evaluacion){
+                    if(evaluacion)
                         modificaValor(nombre, resultado);
-                        asm.WriteLine("MOV " + nombre + ", AX");
-                    }
                 }
                 else
                     throw new Error("Error de semantica, no podemos asignar un <" +dominante +"> a un <" +getTipo(nombre) +"> en linea: " +linea, log);
+                asm.WriteLine("MOV " + nombre + ", AX");
             }
         }
 
@@ -267,9 +266,9 @@ namespace Semantica{
             match("while");
             match("(");
             if(evaluacion)
-                validaWhile = Condicion();
+                validaWhile = Condicion("");
             else{
-                Condicion();
+                Condicion("");
                 validaWhile = false;
             }
             // Requerimiento 4
@@ -291,9 +290,9 @@ namespace Semantica{
             match("while");
             match("(");
             if(evaluacion)
-                validaDo = Condicion();
+                validaDo = Condicion("");
             else{
-                Condicion();
+                Condicion("");
                 validaDo = false;
             }
             // Reuerimiento 4
@@ -313,7 +312,7 @@ namespace Semantica{
             int pos = posicion;
             int lin = linea;
             do{
-                validaFor = Condicion();
+                validaFor = Condicion("");
                 if(!evaluacion)
                     validaFor = false;
                 match(";");
@@ -408,7 +407,7 @@ namespace Semantica{
         }
 
         //Condicion -> Expresion operador_relacional Expresion
-        private bool Condicion(){
+        private bool Condicion(string etiqueta){
             Expresion();
             string operador = getContenido();
             match(tipos.operador_relacional);
@@ -417,18 +416,25 @@ namespace Semantica{
             asm.WriteLine("POP AX");
             float e1 = stack.Pop();
             asm.WriteLine("POP BX");
+            asm.WriteLine("CMP AX, BX");
             switch(operador){
                 case "==":
+                    asm.WriteLine("JNE " + etiqueta);
                     return e1 == e2;
                 case ">":
+                    asm.WriteLine("JLE " + etiqueta);
                     return e1 > e2;
                 case ">=":
+                    asm.WriteLine("JL " + etiqueta);
                     return e1 >= e2;
                 case "<":
+                    asm.WriteLine("JGE " + etiqueta);
                     return e1 < e2;
                 case "<=":
+                    asm.WriteLine("JG " + etiqueta);
                     return e1 <= e2;
                 default:
+                    asm.WriteLine("JE " + etiqueta);
                     return e1 != e2;
             }
         }
@@ -440,9 +446,9 @@ namespace Semantica{
             match("if");
             match("(");
             if(evaluacion)
-                validaIf = Condicion();
+                validaIf = Condicion(etiquetaIf);
             else{
-                Condicion();
+                Condicion("");
                 validaIf = false;
             }
             match(")");
