@@ -1,55 +1,42 @@
 ;Archivo: prueba.asm
-;Compilado: 21/10/2022 09:56:43 a. m.
+;Compilado: 24/10/2022 09:59:12 a. m.
 #make_COM#
 include emu8086.inc
 ORG 100H
 
 ;Variables: 
 
-	area db  ?
-	radio db  ?
-	pi db  ?
-	resultado db  ?
-	a db  ?
-	d db  ?
-	altura db  ?
-	x db  ?
-	y db  ?
-	i db  ?
-	j db  ?
-MOV AX,3
-PUSH AX
-MOV AX,5
-PUSH AX
-POP BX
-POP AX
-ADD AX,BX
-PUSH AX
-MOV AX,8
-PUSH AX
-POP BX
-POP AX
-MUL BX
-PUSH AX
-MOV AX,10
-PUSH AX
-MOV AX,4
-PUSH AX
-POP BX
-POP AX
-SUB AX,BX
-PUSH AX
-MOV AX,2
-PUSH AX
-POP BX
-POP AX
-DIV BX
-PUSH AX
-POP BX
-POP AX
-SUB AX,BX
+	area dw  ?
+	radio dw  ?
+	pi dw  ?
+	resultado dw  ?
+	a dw  ?
+	d dw  ?
+	altura dw  ?
+	x dw  ?
+	y dw  ?
+	i dw  ?
+	j dw  ?
+MOV AX,61
 PUSH AX
 POP AX
 MOV y, AX
+MOV AX,61
+PUSH AX
+POP AX
+POP BX
+MOV AX,0
+PUSH AX
+POP AX
+MOV x, AX
+MOV AX,5
+PUSH AX
+POP AX
+POP BX
+MOV AX,0
+PUSH AX
+POP AX
+if2:
+if1:
 RET
 END

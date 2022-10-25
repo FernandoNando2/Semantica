@@ -20,12 +20,13 @@ namespace Semantica{
         List <Variable> variables = new List<Variable>();
         Stack<float> stack = new Stack<float>();
         Variable.tipoDato dominante;
+        int cif;
         public Lenguaje(){
-
+            cif = 0;
         }
 
         public Lenguaje(String ruta) : base(ruta) {
-
+            cif = 0;
         }
 
         ~Lenguaje(){
@@ -434,6 +435,7 @@ namespace Semantica{
 
         // If -> if(Condicion) Bloque de instrucciones (Else bloqueInstrucciones)?
         private void If(bool evaluacion){
+            string etiquetaIf = "if" + ++cif;
             bool validaIf;
             match("if");
             match("(");
@@ -463,6 +465,7 @@ namespace Semantica{
                         instruccion(evaluacion);
                 }
             }
+            asm.WriteLine(etiquetaIf + ":");
         }
 
         // Printf -> printf(cadena | expresion);
