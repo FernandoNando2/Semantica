@@ -14,19 +14,27 @@ Requerimiento 2: Actualizacion la venganza:
 Requerimiento 3: 
     a) Considerar las variables y los casteos en las expresiones matematicas en ensamblador
     b) Considerar el residuo la division en ensamblador
+    c) Programar el printf y scanf en ensamblador
+Requerimiento 4: 
+    a) Programar el else en ensamblador
+    b) Programar el for en ensamblador
+Requerimiento 5: 
+    a) Programar el while en ensamblador
+    b) Programar el do while en ensamblador
 */
 namespace Semantica{
     public class Lenguaje : Sintaxis{
         List <Variable> variables = new List<Variable>();
         Stack<float> stack = new Stack<float>();
         Variable.tipoDato dominante;
-        int cif;
+        int cIf;
+        int cFor;
         public Lenguaje(){
-            cif = 0;
+            cIf = cFor = 0;
         }
 
         public Lenguaje(String ruta) : base(ruta) {
-            cif = 0;
+            cIf = cFor = 0;
         }
 
         ~Lenguaje(){
@@ -239,7 +247,8 @@ namespace Semantica{
                 match(tipos.identificador);
                 dominante = Variable.tipoDato.Char;
                 if (getClasificacion() == tipos.incremento_termino || getClasificacion() == tipos.incremento_factor){
-                    //Requerimiento 1 b) 
+                    //Requerimiento 1 b)
+
                 }
                 match("=");
                 Expresion();
@@ -295,18 +304,20 @@ namespace Semantica{
                 Condicion("");
                 validaDo = false;
             }
-            // Reuerimiento 4
+            // Requerimiento 4
             match(")");
             match(";");
         }
 
         // For -> for(Asignacion Condicion; Incremento) bloqueInstrucciones | Instruccion  
         private void For(bool evaluacion){
+            string etiquetaInFor = "inicioFor" +cFor;
+            string etiquetaFinFor = "finFor" +cFor++;
+            asm.WriteLine(etiquetaInFor + ":");
             bool validaFor;
             match("for");
             match("(");
             Asignacion(evaluacion);
-
             string variable = getContenido();
             float valor = 0;
             int pos = posicion;
@@ -331,6 +342,7 @@ namespace Semantica{
                     modificaValor(variable, valor);
                 }
             }while(validaFor);
+            asm.WriteLine(etiquetaFinFor +":");
         }
 
         // Incremento -> Identificador ++ | --
@@ -441,7 +453,7 @@ namespace Semantica{
 
         // If -> if(Condicion) Bloque de instrucciones (Else bloqueInstrucciones)?
         private void If(bool evaluacion){
-            string etiquetaIf = "if" + ++cif;
+            string etiquetaIf = "if" + ++cIf;
             bool validaIf;
             match("if");
             match("(");
@@ -633,13 +645,6 @@ namespace Semantica{
                 Expresion();
                 match(")");
                 if(huboCasteo){
-                    /*
-                    Requerimiento 2: 
-                    Saco un elemento del stack ya
-                    Convierte ese valor al equivalente en casteo
-                    Requerimiento 3:
-                    Si el casteo es char y el pop regresa un 256, el valor equivalente en casteo es 0
-                    */
                     float valor = stack.Pop();
                     asm.WriteLine("POP AX");
                     stack.Push(convertir(valor, casteo));
