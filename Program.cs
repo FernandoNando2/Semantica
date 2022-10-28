@@ -9,10 +9,7 @@ namespace Semantica{
             try{
                 Lenguaje a = new Lenguaje("C:\\Users\\Fernando Hernandez\\Desktop\\ITQ\\5to Semestre\\Lenguajes y Automatas II\\Semantica\\prueba.cpp");
                 a.Programa();
-                /*while(!a.FinArchivo()){
-                    a.NextToken();
-                }*/
-                a.cerrar();
+                //a.cerrar();
             }
             catch(Exception e){
                 Console.WriteLine(e.Message);
