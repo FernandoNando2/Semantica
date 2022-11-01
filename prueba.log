@@ -1,17 +1,19 @@
 Archivo: prueba.cpp
-Compilado: 28/10/2022 09:39:04 a. m.
-
+Compilado: 01/11/2022 09:13:23 a. m.
+y = 0
+y y y y y y y y y y y 
 Variables: 
 area Float 0
-radio Float 10
+radio Float 0
 pi Float 0
 resultado Float 0
 a Int 0
 d Int 0
 altura Int 0
 x Float 0
-y Int 0
+y Int 11
 i Int 0
 j Int 0
 l Int 0
 k Int 0
+c Char 0

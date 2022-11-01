@@ -5,16 +5,16 @@ Requerimiento 1: Actualizacion:
     a) Agregar el residuo de la division en el porFactor() ya.
     b) Agregar en instruccion los incrementos de termino y factor
         a++, a--, a+=1, a-=1, a*=1, a/=1
-        en donde el 1 puede ser una expresion
-    c) Programar el destructor de la clase Lenguaje para ejecutar el metodo cerrar() en clase Lexico usar libreria y contenedor
+        en donde el 1 puede ser una expresion ya
+    c) Programar el destructor de la clase Lenguaje para ejecutar el metodo cerrar() en clase Lexico usar libreria y contenedor ya
 Requerimiento 2: Actualizacion la venganza:
     a) Marcar errores semanticos cuando los incrementos de termino o factor superen el rango de la variable
-    b) Considerar el inciso b) y c) para el for.
-    c) Hacer funcionar el do y while
+    b) Considerar el inciso a) y b) para el for.
+    c) Hacer funcionar el do y while ya
 Requerimiento 3: 
-    a) Considerar las variables y los casteos en las expresiones matematicas en ensamblador
-    b) Considerar el residuo la division en ensamblador
-    c) Programar el printf y scanf en ensamblador
+    a) Considerar las variables y los casteos en las expresiones matematicas en ensamblador ya
+    b) Considerar el residuo la division en ensamblador ya
+    c) Programar el printf y scanf en ensamblador ya
 Requerimiento 4: 
     a) Programar el else en ensamblador
     b) Programar el for en ensamblador
@@ -23,7 +23,10 @@ Requerimiento 5:
     b) Programar el do while en ensamblador
 */
 namespace Semantica{
-    public class Lenguaje : Sintaxis{
+    class Lenguaje : Sintaxis,IDisposable{
+        public void Dispose(){
+            Console.WriteLine("Destructor");
+        }
         List <Variable> variables = new List<Variable>();
         Stack<float> stack = new Stack<float>();
         Variable.tipoDato dominante;
@@ -54,8 +57,17 @@ namespace Semantica{
 
         public void variablesAsm(){
             asm.WriteLine("\n;Variables: \n");
-            foreach (Variable v in variables)
-                asm.WriteLine("\t" +v.getNombre() +" dw  ?");
+            foreach (Variable v in variables){
+                if(v.getTipo() == Variable.tipoDato.Char){
+                    asm.WriteLine("\t" +v.getNombre() +" db  ?");
+                }
+                if(v.getTipo() == Variable.tipoDato.Int){
+                    asm.WriteLine("\t" +v.getNombre() +" dw  ?");
+                }
+                if(v.getTipo() == Variable.tipoDato.Float){
+                    asm.WriteLine("\t" +v.getNombre() +" dd  ?");
+                }
+            }
         }
 
         private bool existeVariable(string nombre){
@@ -313,37 +325,54 @@ namespace Semantica{
             bool validaWhile;
             match("while");
             match("(");
+            int pos = posicion;
+            int lin = linea;
+            string variable = getContenido();
+            do{
             if(evaluacion)
                 validaWhile = Condicion("");
             else{
                 Condicion("");
                 validaWhile = false;
             }
-            // Requerimiento 4
             match(")");
             if(getContenido() == "{")
                 bloqueInstrucciones(validaWhile);
             else
                 instruccion(validaWhile);
+            if(validaWhile){
+                posicion = pos - variable.Length;
+                linea = lin;
+                setPosicion(posicion);
+                NextToken();
+            }
+            }while(validaWhile);
         }
 
         //Do -> do bloqueInstrucciones | instruccion while(Condicion);
         private void Do(bool evaluacion){
-            bool validaDo = !evaluacion;
+            bool validaDo = evaluacion;
             match("do");
-            if(getContenido() == "{")
-                bloqueInstrucciones(validaDo);
-            else
-                instruccion(validaDo);
-            match("while");
-            match("(");
-            if(evaluacion)
+            int pos = posicion;
+            int lin = linea;
+            do{
+                if(getContenido() == "{")
+                    bloqueInstrucciones(validaDo);
+                else
+                    instruccion(validaDo);
+                match("while");
+                match("(");
+                string variable = getContenido();
                 validaDo = Condicion("");
-            else{
-                Condicion("");
-                validaDo = false;
-            }
-            // Requerimiento 4
+                if(!evaluacion)
+                    validaDo = evaluacion;
+                else if(validaDo){
+                    posicion = pos - 1;
+                    linea = lin;
+                    setPosicion(posicion);
+                    NextToken();
+                }
+            }while(validaDo);
             match(")");
             match(";");
         }
@@ -693,9 +722,6 @@ namespace Semantica{
                     dominante = casteo;
                 }
             }
-        }
-        ~Lenguaje(){
-            Console.WriteLine("Destructor");
         }
     }
 }
