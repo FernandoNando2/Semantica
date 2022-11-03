@@ -1,17 +1,17 @@
 // Fernando Hernández Domínguez
 using System;
 /*
-Requerimiento 1: Actualizacion: 
+Requerimiento 1: Actualizacion: ya
     a) Agregar el residuo de la division en el porFactor() ya.
     b) Agregar en instruccion los incrementos de termino y factor
         a++, a--, a+=1, a-=1, a*=1, a/=1
         en donde el 1 puede ser una expresion ya
     c) Programar el destructor de la clase Lenguaje para ejecutar el metodo cerrar() en clase Lexico usar libreria y contenedor ya
-Requerimiento 2: Actualizacion la venganza:
-    a) Marcar errores semanticos cuando los incrementos de termino o factor superen el rango de la variable
-    b) Considerar el inciso a) y b) para el for.
+Requerimiento 2: Actualizacion la venganza: ya
+    a) Marcar errores semanticos cuando los incrementos de termino o factor superen el rango de la variable ya
+    b) Considerar el inciso a) y b) para el for. ya
     c) Hacer funcionar el do y while ya
-Requerimiento 3: 
+Requerimiento 3: ya 
     a) Considerar las variables y los casteos en las expresiones matematicas en ensamblador ya
     b) Considerar el residuo la division en ensamblador ya
     c) Programar el printf y scanf en ensamblador ya
@@ -23,9 +23,10 @@ Requerimiento 5:
     b) Programar el do while en ensamblador
 */
 namespace Semantica{
-    class Lenguaje : Sintaxis,IDisposable{
+    class Lenguaje : Sintaxis, IDisposable{
+
         public void Dispose(){
-            Console.WriteLine("Destructor");
+            cerrar();
         }
         List <Variable> variables = new List<Variable>();
         Stack<float> stack = new Stack<float>();
@@ -248,74 +249,28 @@ namespace Semantica{
         private void Asignacion(bool evaluacion){
             string nombre = getContenido();
             float resultado;
-            string operador;
             if(!existeVariable(nombre))
                 throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
             else{
                 match(tipos.identificador);
-                dominante = Variable.tipoDato.Char;
-                operador = getContenido();
-                switch(operador[0]){
-                    case '+':
-                        if (getContenido() == "++"){
-                            modificaValor(nombre, getValor(nombre) + 1);
-                            match("++");
-                            match(tipos.fin_sentencia);
-                        }
-                        else{
-                            match("+=");
-                            Expresion();
-                            resultado = stack.Pop();
-                            modificaValor(nombre, getValor(nombre) + resultado);
-                            match(tipos.fin_sentencia);
-                        }
-                        break;
-                    case '-':
-                        if (getContenido() == "--"){
-                            modificaValor(nombre, getValor(nombre) - 1);
-                            match("--");
-                            match(tipos.fin_sentencia);
-                        }
-                        else{
-                            match("-=");
-                            Expresion();
-                            resultado = stack.Pop();
-                            modificaValor(nombre, getValor(nombre) - resultado);
-                            match(tipos.fin_sentencia);
-                        }
-                        break;
-                    case '*':
-                        match("*=");
-                        Expresion();
-                        resultado = stack.Pop();
-                        modificaValor(nombre, getValor(nombre) * resultado);
-                        match(tipos.fin_sentencia);
-                        break;
-                    case '/':
-                        match("/=");
-                        Expresion();
-                        resultado = stack.Pop();
-                        modificaValor(nombre, getValor(nombre) / resultado);
-                        match(tipos.fin_sentencia);
-                        break;
-                    case '=':
-                        match("=");
-                        Expresion();
-                        match(";");
-                        resultado = stack.Pop();
-                        asm.WriteLine("POP AX");
-                        log.Write(nombre +" = " +resultado);
-                        log.WriteLine();
-                        if(dominante < evaluaNumero(resultado))
-                            dominante = evaluaNumero(resultado);
-                        if(dominante <= getTipo(nombre)){
-                            if(evaluacion)
-                                modificaValor(nombre, resultado);
-                        }
-                        else
-                            throw new Error("Error de semantica, no podemos asignar un <" +dominante +"> a un <" +getTipo(nombre) +"> en linea: " +linea, log);
-                        asm.WriteLine("MOV " + nombre + ", AX");
-                        break;
+                if(getClasificacion() == tipos.incremento_factor || getClasificacion() == tipos.incremento_termino){
+                    modificaValor(nombre, Incremento(nombre,evaluacion));
+                    match(tipos.fin_sentencia);
+                }
+                else{
+                    match("=");
+                    dominante = Variable.tipoDato.Char;
+                    Expresion();
+                    resultado = stack.Pop();
+                    match(tipos.fin_sentencia);
+                    if (dominante < evaluaNumero(resultado))
+                        dominante = evaluaNumero(resultado);
+                    if (dominante <= getTipo(nombre)){
+                        if (evaluacion)
+                            modificaValor(nombre, resultado);
+                    }
+                    else
+                        throw new Error("Error de semantica no podemos asignar un <" + dominante + "> a un <" + getTipo(nombre) + "> en linea: " + linea, log);
                 }
             }
         }
@@ -395,7 +350,8 @@ namespace Semantica{
                 if(!evaluacion)
                     validaFor = false;
                 match(";");
-                valor = Incremento();
+                match(tipos.identificador);
+                valor = Incremento(variable,evaluacion);
                 // Requerimiento 1 d)
                 match(")");
                 if(getContenido() == "{")
@@ -405,46 +361,67 @@ namespace Semantica{
                 if(validaFor){
                     posicion = pos - variable.Length;
                     linea = lin;
+                    modificaValor(variable, valor);
                     setPosicion(posicion);
                     NextToken();
-                    modificaValor(variable, valor);
                 }
             }while(validaFor);
             asm.WriteLine(etiquetaFinFor +":");
         }
 
         // Incremento -> Identificador ++ | --
-        private void Incremento(bool evaluacion){
-            string variable = getContenido();
-            if(!existeVariable(getContenido()))
-                throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
-            match(tipos.identificador);
-            if(getContenido() == "++"){
-                match("++");
-                if(evaluacion)
-                    modificaValor(variable, getValor(variable) + 1);
-            }
-            else{
-                match("--");
-                if(evaluacion)
-                    modificaValor(variable, getValor(variable) - 1);
-            }
-        }
 
-        private float Incremento(){
-            string variable = getContenido();
+        private float Incremento(string variable, bool evaluacion){
+            float resultado;
             float valor = getValor(variable);
-            if(!existeVariable(getContenido()))
-                throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
-            match(tipos.identificador);
+            if(!existeVariable(variable))
+                throw new Error("Error de sintaxis, variable <" +variable +"> no existe en el contexto actual, linea: "+linea, log);
             if(getContenido() == "++"){
+                if(evaluacion)
+                    valor++;
+                if(getTipo(variable) == Variable.tipoDato.Char && valor > 255)
+                    throw new Error("Error de semantica, variable <" +variable +"> excede el rango del char en linea: "+linea, log);
+                else if(getTipo(variable) == Variable.tipoDato.Int && valor > 65535)
+                    throw new Error("Error de semantica, variable <" +variable +"> excede el rango del int en linea: "+linea, log);
                 match("++");
-                valor += 1;
             }
-            else{
+            else if(getContenido() == "--"){
+                if(evaluacion)
+                    valor--;
                 match("--");
-                valor -= 1;
             }
+            else if(getContenido() == "+="){
+                match("+=");
+                Expresion();
+                resultado = stack.Pop();
+                if(evaluacion)
+                    valor += resultado;
+            }
+            else if (getContenido() == "-="){
+                match("-=");
+                Expresion();
+                resultado = stack.Pop();
+                if (evaluacion)
+                    valor -= resultado;
+            }
+            else if (getContenido() == "*=")
+            {
+                match("*=");
+                Expresion();
+                resultado = stack.Pop();
+            if (evaluacion)
+                valor *= resultado;
+            }
+            else if (getContenido() == "/=")
+            {
+                match("/=");
+                Expresion();
+                resultado = stack.Pop();
+                if(evaluacion)
+                    valor /= resultado;
+            }
+            if(getTipo(variable) < dominante)
+                throw new Error("Error de semantica, no podemos asignar un <" + dominante + "> a un <" + getTipo(variable) + "> en linea: " + linea, log);
             return valor;
         }
 
@@ -686,7 +663,6 @@ namespace Semantica{
                 if(!existeVariable(getContenido()))
                     throw new Error("Error de sintaxis, variable <" + getContenido() +"> no existe en el contexto actual, linea: "+linea, log);
                 log.Write(getContenido() + " ");
-                // Requerimiento 1:  Actualizar el dominante para variables en la expresión.
                 if(dominante < getTipo(getContenido()))
                     dominante = getTipo(getContenido());
                 stack.Push(getValor(getContenido()));
