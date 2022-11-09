@@ -1,28 +1,159 @@
 ;Archivo: prueba.asm
-;Compilado: 08/11/2022 10:53:52 a. m.
+;Compilado: 09/11/2022 08:02:39 a. m.
 #make_COM#
 include emu8086.inc
 ORG 100H
-MOV AX,0
+PRINT 'Introduce la altura de la piramide: '
+CALL SCAN_NUM
+MOV altura, CX
+MOV AX,altura
 PUSH AX
-POP AX
-MOV i, AX
-inicioFor0:
-MOV AX,i
-PUSH AX
-MOV AX,10
+MOV AX,2
 PUSH AX
 POP BX
 POP AX
 CMP AX, BX
-JGE finFor0
+JLE if1
+MOV AX,altura
+PUSH AX
+POP AX
+MOV i, AX
+inicioFor1:
 MOV AX,i
+PUSH AX
+MOV AX,0
+PUSH AX
+POP BX
+POP AX
+CMP AX, BX
+JLE finFor1
+MOV AX,1
+PUSH AX
+MOV AX,0
+PUSH AX
+POP AX
+MOV j, AX
+iniciowhile1:
+MOV AX,j
+PUSH AX
+MOV AX,altura
+PUSH AX
+MOV AX,i
+PUSH AX
+POP BX
+POP AX
+SUB AX,BX
+PUSH AX
+POP BX
+POP AX
+CMP AX, BX
+JGE finwhile1
+MOV AX,j
+PUSH AX
+MOV AX,2
+PUSH AX
+POP BX
+POP AX
+DIV BX
+PUSH DX
+MOV AX,0
+PUSH AX
+POP BX
+POP AX
+CMP AX, BX
+JNE if2
+PRINT '*'
+JMP finIf2
+if2:
+PRINT '-'
+finIf2:
+MOV AX,1
+PUSH AX
+POP AX
+ADD j, AX
+JMP iniciowhile1
+finwhile1:
+PRINT ''
+POP AX
+SUB i, AX
+JMP inicioFor1
+finFor1:
+MOV AX,0
+PUSH AX
+POP AX
+MOV k, AX
+iniciodo1:
+PRINT '-'
+MOV AX,2
+PUSH AX
+POP AX
+ADD k, AX
+MOV AX,k
+PUSH AX
+MOV AX,altura
+PUSH AX
+MOV AX,2
+PUSH AX
+POP BX
+POP AX
+MUL BX
+PUSH AX
+POP BX
+POP AX
+CMP AX, BX
+JGE findo1
+JMP iniciodo1
+findo1:
+PRINT ''
+JMP finIf1
+if1:
+PRINT 'Error: la altura debe de ser mayor que 2'
+finIf1:
+MOV AX,1
+PUSH AX
+MOV AX,1
+PUSH AX
+POP BX
+POP AX
+CMP AX, BX
+JE if3
+PRINT 'Esto no se debe imprimir'
+MOV AX,2
+PUSH AX
+MOV AX,2
+PUSH AX
+POP BX
+POP AX
+CMP AX, BX
+JNE if4
+PRINT 'Esto tampoco'
+JMP finIf4
+if4:
+finIf4:
+JMP finIf3
+if3:
+finIf3:
+MOV AX,258
+PUSH AX
+POP AX
+MOV a, AX
+PRINT 'Valor de variable int 'a' antes del casteo: '
+MOV AX,a
 PUSH AX
 POP AX
 CALL PRINT_NUM
-INC i
-JMP inicioFor0
-finFor0:
+MOV AX,a
+PUSH AX
+POP AX
+POP AX
+MOV y, AX
+MOV AH, 0
+PRINT 'Valor de variable char 'y' despues del casteo de a: '
+MOV AX,y
+PUSH AX
+POP AX
+CALL PRINT_NUM
+PRINT 'A continuacion se intenta asignar un int a un char sin usar casteo: '
 
 ;Variables: 
 
