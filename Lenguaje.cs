@@ -124,7 +124,7 @@ namespace Semantica{
             Main();
             displayVariables();
             variablesAsm();
-            asm.WriteLine("RET");
+            //asm.WriteLine("RET");
             asm.WriteLine("DEFINE_PRINT_NUM");
             asm.WriteLine("DEFINE_PRINT_NUM_UNS");
             asm.WriteLine("DEFINE_SCAN_NUM");
@@ -268,7 +268,10 @@ namespace Semantica{
                     resultado = stack.Pop();
                     if(ASM){
                         asm.WriteLine("POP AX");
-                        asm.WriteLine("MOV " +nombre +", AX");
+                        if(getTipo(nombre) == Variable.tipoDato.Char)
+                            asm.WriteLine("MOV "+nombre +", AL");
+                        else
+                            asm.WriteLine("MOV " +nombre +", AX");
                     }
                     match(tipos.fin_sentencia);
                     if (dominante < evaluaNumero(resultado))
@@ -710,14 +713,17 @@ namespace Semantica{
                 if(evaluacion)
                     Console.Write(cadenaLimpia.Replace("\\n","\n"));
                 if(ASM){
-                    switch(cadenaLimpia){
-                        case "\n":
-                            asm.WriteLine("PRINTN \"\"");
-                            break;
-                        default:
-                            asm.WriteLine("PRINT \'" +cadenaLimpia.Replace("\\n", "") +"\'");
-                            break;
+                    if(cadenaLimpia.Contains("\\n")){
+                        string[] cadenas = cadenaLimpia.Split("\\n");
+                        for(int i = 0; i < cadenas.Length; i++){
+                            if(i == cadenas.Length - 1)
+                                asm.WriteLine("PRINT \'"+ cadenas[i] +"\'");
+                            else
+                                asm.WriteLine("PRINTN \'"+ cadenas[i] +"\'");
+                        }
                     }
+                    else
+                        asm.WriteLine("PRINT \'"+ cadenaLimpia +"\'");
                 }
                 match(tipos.cadena);
             }
@@ -855,7 +861,10 @@ namespace Semantica{
                     dominante = evaluaNumero(float.Parse(getContenido()));
                 stack.Push(float.Parse(getContenido()));
                 if(ASM){
-                    asm.WriteLine("MOV AX," + getContenido());
+                    if(dominante == Variable.tipoDato.Char)
+                        asm.WriteLine("MOV AL," + getContenido());
+                    else
+                        asm.WriteLine("MOV AX," + getContenido());
                     asm.WriteLine("PUSH AX");
                 }
                 match(tipos.numero);
@@ -868,7 +877,10 @@ namespace Semantica{
                     dominante = getTipo(getContenido());
                 stack.Push(getValor(getContenido()));
                 if(ASM){
-                    asm.WriteLine("MOV AX," + getContenido());
+                    if(dominante == Variable.tipoDato.Char)
+                        asm.WriteLine("MOV AL," + getContenido());
+                    else
+                        asm.WriteLine("MOV AX," + getContenido());
                     asm.WriteLine("PUSH AX");
                 }
                 match(tipos.identificador);
@@ -899,7 +911,7 @@ namespace Semantica{
                 if(huboCasteo){
                     float valor = stack.Pop();
                     if(ASM)
-                        asm.WriteLine("POP AX");
+                        asm.WriteLine("MOV AH, 0");
                     stack.Push(convertir(valor, casteo));
                     dominante = casteo;
                 }

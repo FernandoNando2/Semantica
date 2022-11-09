@@ -1,5 +1,5 @@
 ;Archivo: prueba.asm
-;Compilado: 09/11/2022 08:02:39 a. m.
+;Compilado: 09/11/2022 09:44:37 a. m.
 #make_COM#
 include emu8086.inc
 ORG 100H
@@ -29,7 +29,7 @@ CMP AX, BX
 JLE finFor1
 MOV AX,1
 PUSH AX
-MOV AX,0
+MOV AL,0
 PUSH AX
 POP AX
 MOV j, AX
@@ -73,18 +73,19 @@ POP AX
 ADD j, AX
 JMP iniciowhile1
 finwhile1:
+PRINTN ''
 PRINT ''
 POP AX
 SUB i, AX
 JMP inicioFor1
 finFor1:
-MOV AX,0
+MOV AL,0
 PUSH AX
 POP AX
 MOV k, AX
 iniciodo1:
 PRINT '-'
-MOV AX,2
+MOV AL,2
 PUSH AX
 POP AX
 ADD k, AX
@@ -104,10 +105,13 @@ CMP AX, BX
 JGE findo1
 JMP iniciodo1
 findo1:
+PRINTN ''
 PRINT ''
 JMP finIf1
 if1:
-PRINT 'Error: la altura debe de ser mayor que 2'
+PRINTN ''
+PRINTN 'Error: la altura debe de ser mayor que 2'
+PRINT ''
 finIf1:
 MOV AX,1
 PUSH AX
@@ -144,16 +148,19 @@ POP AX
 CALL PRINT_NUM
 MOV AX,a
 PUSH AX
-POP AX
-POP AX
-MOV y, AX
 MOV AH, 0
+POP AX
+MOV y, AL
+MOV AH, 0
+PRINTN ''
 PRINT 'Valor de variable char 'y' despues del casteo de a: '
-MOV AX,y
+MOV AL,y
 PUSH AX
 POP AX
 CALL PRINT_NUM
-PRINT 'A continuacion se intenta asignar un int a un char sin usar casteo: '
+PRINTN ''
+PRINTN 'A continuacion se intenta asignar un int a un char sin usar casteo: '
+PRINT ''
 
 ;Variables: 
 
@@ -170,7 +177,6 @@ PRINT 'A continuacion se intenta asignar un int a un char sin usar casteo: '
 	i dw  ?
 	j dw  ?
 	k dw  ?
-RET
 DEFINE_PRINT_NUM
 DEFINE_PRINT_NUM_UNS
 DEFINE_SCAN_NUM
