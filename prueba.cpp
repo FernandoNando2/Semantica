@@ -41,7 +41,7 @@ void main(){
             printf("Esto tampoco");     //Requerimiento 4.- evalua nuevamente los if respecto al parametro que reciben
         }
     }
-    a = 258;
+    a = 259;
     printf("Valor de variable int 'a' antes del casteo: ");
     printf(a);
     y = (char)(a);  //Requerimiento 2 y 3, actualiza el dominante y convierte el valor con una funcion

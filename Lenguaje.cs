@@ -682,9 +682,8 @@ namespace Semantica{
                 instruccion(validaIf,ASM);
             if(ASM){
                 asm.WriteLine("JMP " + etiquetaFinIf);
-            }
-            if(ASM)
                 asm.WriteLine(etiquetaIf + ":");
+            }
             if(getContenido() == "else"){
                 match("else");
                 if(getContenido() == "{"){

@@ -1,5 +1,5 @@
 ;Archivo: prueba.asm
-;Compilado: 09/11/2022 09:44:37 a. m.
+;Compilado: 11/11/2022 09:21:18 a. m.
 #make_COM#
 include emu8086.inc
 ORG 100H
@@ -75,8 +75,6 @@ JMP iniciowhile1
 finwhile1:
 PRINTN ''
 PRINT ''
-POP AX
-SUB i, AX
 JMP inicioFor1
 finFor1:
 MOV AL,0
@@ -137,7 +135,7 @@ finIf4:
 JMP finIf3
 if3:
 finIf3:
-MOV AX,258
+MOV AX,259
 PUSH AX
 POP AX
 MOV a, AX
