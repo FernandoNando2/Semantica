@@ -401,41 +401,41 @@ namespace Semantica{
                     linea = lin;
                     modificaValor(variable, valor);
                     setPosicion(posicion);
-                    switch(operador1){
-                        case "++":
-                            if(ASM)
-                                asm.WriteLine("INC " +variable);
-                            break;
-                        case "--":
-                            if(ASM)
-                                asm.WriteLine("DEC " +variable);
-                            break;
-                        case "+=":
-                            if(ASM){
-                                asm.WriteLine("POP AX");
-                                asm.WriteLine("ADD " +variable +", AX");
-                            }
-                            break;
-                        case "-=":
-                            if(ASM){
-                                asm.WriteLine("POP AX");
-                                asm.WriteLine("SUB " +variable +", AX");
-                            }
-                            break;
-                        case "*=":
-                            if(ASM){
-                                asm.WriteLine("POP AX");
-                                asm.WriteLine("MUL " +variable);
-                            }
-                            break;
-                        case "/=":
-                            if(ASM){
-                                asm.WriteLine("POP AX");
-                                asm.WriteLine("DIV " +variable);
-                            }
-                            break;
-                    }
                     NextToken();
+                }
+                switch(operador1){
+                    case "++":
+                        if(ASM)
+                            asm.WriteLine("INC " +variable);
+                        break;
+                    case "--":
+                        if(ASM)
+                            asm.WriteLine("DEC " +variable);
+                        break;
+                    case "+=":
+                        if(ASM){
+                            asm.WriteLine("POP AX");
+                            asm.WriteLine("ADD " +variable +", AX");
+                        }
+                        break;
+                    case "-=":
+                        if(ASM){
+                            asm.WriteLine("POP AX");
+                            asm.WriteLine("SUB " +variable +", AX");
+                        }
+                        break;
+                    case "*=":
+                        if(ASM){
+                            asm.WriteLine("POP AX");
+                            asm.WriteLine("MUL " +variable);
+                        }
+                        break;
+                    case "/=":
+                        if(ASM){
+                            asm.WriteLine("POP AX");
+                            asm.WriteLine("DIV " +variable);
+                        }
+                        break;
                 }
                 if(ASM){
                     asm.WriteLine("JMP " +etiquetaInFor);
